@@ -5,6 +5,7 @@ namespace Phantom.Core.Builtins
 {
     using System;
     using System.IO;
+    using System.Runtime.CompilerServices;
     using FtpLib;
 
     public class FileFilter
@@ -38,38 +39,50 @@ namespace Phantom.Core.Builtins
             return this;
         }
 
-        public FileFilter CopyToDirectory(string sourceDirectory, string destinationDirectory) 
+        private void CopyToDirectory(string sourceDirectory, string destinationDirectory, bool overwrite) 
         {
-            foreach (WrappedFileSystemInfo fileSystemInfo in GetFilesAndFolders(sourceDirectory)) 
+            foreach (WrappedFileSystemInfo fileSystemInfo in GetFilesAndFolders(sourceDirectory))
             {
-                if(fileSystemInfo is WrappedDirectoryInfo) {
-                
+                if (fileSystemInfo is WrappedDirectoryInfo)
+                {
+
                     var combinedPath = Path.Combine(destinationDirectory, fileSystemInfo.PathWithoutBaseDirectory);
                     if (!Directory.Exists(combinedPath))
                     {
                         Directory.CreateDirectory(combinedPath);
                     }
                 }
-                else 
+                else
                 {
                     if (!Directory.Exists(destinationDirectory))
                     {
                         Directory.CreateDirectory(destinationDirectory);
                     }
-                
+
                     var combinedPath = Path.Combine(destinationDirectory, fileSystemInfo.PathWithoutBaseDirectory);
                     var newPath = Path.GetDirectoryName(combinedPath);
                     if (!Directory.Exists(newPath))
                     {
                         Directory.CreateDirectory(newPath);
                     }
-                    File.Copy(fileSystemInfo.FullName, combinedPath, true);
+                    File.Copy(fileSystemInfo.FullName, combinedPath, overwrite);
                 }
-                
-            }
 
+            }
+        }
+
+        public FileFilter CopyToDirectory(string sourceDirectory, string destinationDirectory) 
+        {
+            CopyToDirectory(sourceDirectory, destinationDirectory, true);
             return this;
             
+        }
+
+        public FileFilter CopyToDirectoryWithoutOverWrite(string sourceDirectory, string destinationDirectory)
+        {
+            CopyToDirectory(sourceDirectory, destinationDirectory, false);
+            return this;
+
         }
 
 
@@ -277,4 +290,17 @@ namespace Phantom.Core.Builtins
             return includedFiles.Except(fixedExcludes);
         }
     }
+
+    [CompilerGlobalScope]
+    public static class FilesContainer
+    {
+        public static FileFilter Files 
+        {
+            get 
+            {
+                return new FileFilter();
+            }
+        }
+    }
+
 }
