@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Phantom</RootNamespace>
     <AssemblyName>Phantom</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -31,6 +31,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -101,6 +102,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -109,4 +113,11 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+	<Target Name="AfterBuild">
+		<ItemGroup>
+			<DslFiles Include="..\Phantom.DSL.Boo\$(OutDir)*.*"></DslFiles>
+			<DslFiles Include="..\Phantom.DSL.CSharp\$(OutDir)*.*"></DslFiles>
+		</ItemGroup>
+		<Copy SourceFiles="@(DslFiles)" DestinationFolder="$(OutDir)" />
+	</Target>
 </Project>

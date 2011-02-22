@@ -17,33 +17,38 @@
 namespace Phantom.Core.Builtins {
 	using System;
 	using System.Collections;
+	using System.Collections.Generic;
 	using System.IO;
-	using Boo.Lang;
 
 	/// <summary>
 	/// Provides MSBuild integration
 	/// </summary>
 	public class msbuild : ExecutableTool<msbuild> {
 		public msbuild() {
-			toolPath = BuildMsbuildPath("3.5");
+			toolPath = BuildMsbuildPath("4.0");
 			configuration = "debug";
 			verbosity = "minimal";
 			targets = new[] {"build"};
-			properties = new Hash();
+			properties = new Dictionary<string, object>();
 		}
 
 		private string BuildMsbuildPath(string version) {
 			if(version == "4.0" || version == "4") {
 				version = "4.0.30319";
 			}
-
-			return Path.Combine(Environment.GetEnvironmentVariable("windir"), "Microsoft.NET/Framework/v" + version + "/msbuild.exe");
+			
+			string windir = Environment.GetEnvironmentVariable("windir");
+			if (windir != null) {
+				return Path.Combine(windir, "Microsoft.NET/Framework/v" + version + "/msbuild.exe");
+			}
+			
+			return "/usr/bin/xbuild";
 		}
 
 		public string configuration { get; set; }
 		public string[] targets { get; set; }
 		public string verbosity { get; set; }
-		public Hash properties { get; set; }
+		public IDictionary properties { get; set; }
 		public string file { get; set; }
 		
 		string _version;
@@ -58,13 +63,13 @@ namespace Phantom.Core.Builtins {
 
 		protected override void Execute() {
 			if (string.IsNullOrEmpty(file)) {
-				throw new InvalidOperationException("Please specify the 'path' property for calls to msbuild.");
+				throw new InvalidOperationException("Please specify the 'file' property for calls to msbuild.");
 			}
 
-			string args = file + " /p:Configuration=" + configuration + " /t:" + string.Join(";", targets) + " /v:" + verbosity;
+			string args = "\"" + file + "\" /p:Configuration=" + configuration + " /t:" + string.Join(";", targets) + " /v:" + verbosity;
 
 			foreach (DictionaryEntry entry in properties) {
-				args += " /p:" + entry.Key + "=" + entry.Value;
+                args += " /p:" + entry.Key + "=\"" + entry.Value + "\"";
 			}
 
 			Execute(args);

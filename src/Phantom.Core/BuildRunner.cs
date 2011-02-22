@@ -23,19 +23,14 @@ namespace Phantom.Core {
 	using System.IO;
 	using System.Linq;
 	using System.Reflection;
-	using Integration;
-	using Rhino.DSL;
 
 	[Export]
 	public class BuildRunner {
-		readonly DslFactory dslFactory;
+		readonly IEnumerable<IDslFactory> dslFactories;
 
 		[ImportingConstructor]
-		public BuildRunner([ImportMany] IEnumerable<ITaskImportBuilder> taskImportBuilders) {
-			dslFactory = new DslFactory();
-			dslFactory.Register<PhantomBase>(
-				new PhantomDslEngine(taskImportBuilders.ToArray())
-			);
+		public BuildRunner([ImportMany] IEnumerable<IDslFactory> dslFactories) {
+			this.dslFactories = dslFactories;
 		}
 
 		public static BuildRunner Create() {
@@ -45,14 +40,22 @@ namespace Phantom.Core {
 		}
 
 		public ScriptModel GenerateBuildScript(string path) {
-			var script = dslFactory.Create<PhantomBase>(path);
-			script.Execute();
-			return script.Model;
+			var factory = dslFactories.FirstOrDefault(x => x.CanExecute(path));
+			if (factory == null) throw new ScriptLoadException(path);
+
+			var model = factory.BuildModel(path);
+			return model;
 		}
 
 		public void Execute(PhantomOptions options) {
 			if (options.AttachDebugger && !Debugger.IsAttached)
 				Debugger.Launch();
+
+			// Copy additional args to environment variables
+			//TODO: Don't use Environment to do this...
+			foreach(var pair in options.AdditionalArguments) {
+				Environment.SetEnvironmentVariable(pair.Key, pair.Value);
+			}
 
 			var script = GenerateBuildScript(options.File);
 			script.ExecuteTargets(options.TargetNames.ToArray());

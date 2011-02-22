@@ -10,7 +10,8 @@ namespace Phantom.Core
     internal class FtpFileAdaptionLayer : IFileAdaptionLayer
     {
         FtpConnection _ftpConnection;
-        public FtpFileAdaptionLayer(FtpConnection ftpConnection) {
+        public FtpFileAdaptionLayer(FtpConnection ftpConnection)
+        {
             _ftpConnection = ftpConnection;
         }
         // Methods
@@ -38,6 +39,6 @@ namespace Phantom.Core
         {
             return _ftpConnection.GetFiles(path).Select(file => path.EndsWith("/") ? path.TrimEnd('.') + file.Name : path.TrimEnd('.') + "/" + file.Name).ToArray();
         }
-       
+
     }
 }

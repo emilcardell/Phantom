@@ -68,6 +68,12 @@ namespace Phantom.Core {
 	   
 	}
 
+	public class ScriptLoadException : PhantomException {
+		public ScriptLoadException(string path) : base(string.Format("Could not load script '{0}'. It is not a recognised format.", path)) {
+			
+		}
+	}
+
     public class SiteAlreadyExistsException : PhantomException
     {
         public SiteAlreadyExistsException(string siteName)

@@ -75,14 +75,12 @@ namespace Phantom.Core.Builtins
         {
             CopyToDirectory(sourceDirectory, destinationDirectory, true);
             return this;
-            
         }
 
         public FileFilter CopyToDirectoryWithoutOverWrite(string sourceDirectory, string destinationDirectory)
         {
             CopyToDirectory(sourceDirectory, destinationDirectory, false);
             return this;
-
         }
 
 
