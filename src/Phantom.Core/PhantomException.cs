@@ -74,14 +74,6 @@ namespace Phantom.Core {
 		}
 	}
 
-    public class SiteAlreadyExistsException : PhantomException
-    {
-        public SiteAlreadyExistsException(string siteName)
-            : base(string.Format("There is already a site with the name {0}.", siteName))
-        {
-        }
-    }
-
     public class StringIsNullOrEmptyException : PhantomException
     {
         public StringIsNullOrEmptyException(string stringName)

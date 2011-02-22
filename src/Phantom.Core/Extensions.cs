@@ -19,7 +19,7 @@ namespace Phantom.Core {
 	using System.Collections.Generic;
 	using System.Linq;
 
-	internal static class Extensions {
+	public static class Extensions {
 		public static TValue ValueOrDefault<TValue>(this IDictionary hash, string key, TValue defaultValue) {
 			if (hash.Contains(key)) {
 				object value = hash[key];

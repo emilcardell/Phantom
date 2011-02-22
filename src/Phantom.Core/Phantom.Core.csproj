@@ -61,10 +61,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\dotnetzip\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\iis7\Microsoft.Web.Administration.dll</HintPath>
-    </Reference>
     <Reference Include="Rhino.DSL, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\rhino-dsl\Rhino.DSL.dll</HintPath>
@@ -93,11 +89,10 @@
     <Compile Include="Builtins\FileFilter.cs" />
     <Compile Include="Builtins\FileList.cs" />
     <Compile Include="Builtins\FtpDirectory.cs" />
-    <Compile Include="Builtins\IIS7Functions.cs" />
     <Compile Include="Builtins\IOPermissionFunctions.cs" />
-    <Compile Include="Builtins\MsSqlFunctions.cs" />
     <Compile Include="Builtins\NCover.cs" />
     <Compile Include="Builtins\NCoverExplorer.cs" />
+    <Compile Include="Builtins\QuickReferences.cs" />
     <Compile Include="Builtins\XSLT.cs" />
     <Compile Include="Builtins\XUnit.cs" />
     <Compile Include="ExcludeFromCoverageAttribute.cs" />

@@ -104,7 +104,6 @@
     <Compile Include="ExecTester.cs" />
     <Compile Include="FileCopyTester.cs" />
     <Compile Include="GlobalsTester.cs" />
-    <Compile Include="IIS7Tester.cs" />
     <Compile Include="ImportTester.cs" />
     <Compile Include="IncludeTester.cs" />
     <Compile Include="IOFunctionTests.cs" />
