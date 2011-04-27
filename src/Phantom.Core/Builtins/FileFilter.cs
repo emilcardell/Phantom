@@ -232,10 +232,26 @@ namespace Phantom.Core.Builtins
                 ftpConnection.RemoveDirectory(startDirectory);
         }
 
-        public void Delete(string sourceDirectory)
+        public void DeleteInDirectory(string sourceDirectory)
         {
             foreach (WrappedFileSystemInfo fileSystemInfo in GetFilesAndFolders(sourceDirectory))
             {
+                fileSystemInfo.Delete();
+            }
+        }
+
+        public void ForceDeleteInDirectory(string sourceDirectory)
+        {
+            foreach (WrappedFileSystemInfo fileSystemInfo in GetFilesAndFolders(sourceDirectory))
+            {
+
+                if (fileSystemInfo.Attributes == FileAttributes.ReadOnly) 
+                {
+                    var fullPath = Path.Combine(sourceDirectory, fileSystemInfo.PathWithoutBaseDirectory);
+                    if(File.Exists(fullPath))
+                        File.SetAttributes(fullPath, FileAttributes.Normal);
+                }
+                   
                 fileSystemInfo.Delete();
             }
 
@@ -292,7 +308,7 @@ namespace Phantom.Core.Builtins
     [CompilerGlobalScope]
     public static class FilesContainer
     {
-        public static FileFilter Files 
+        public static FileFilter NewFileFilter 
         {
             get 
             {
