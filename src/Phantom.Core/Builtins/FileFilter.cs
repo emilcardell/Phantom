@@ -292,7 +292,7 @@ namespace Phantom.Core.Builtins
     [CompilerGlobalScope]
     public static class FilesContainer
     {
-        public static FileFilter Files 
+        public static FileFilter CreateNewFileFilter 
         {
             get 
             {
