@@ -232,11 +232,56 @@ namespace Phantom.Core.Builtins
                 ftpConnection.RemoveDirectory(startDirectory);
         }
 
-        public void Delete(string sourceDirectory)
+        public void DeleteInDirectory(string sourceDirectory)
         {
             foreach (WrappedFileSystemInfo fileSystemInfo in GetFilesAndFolders(sourceDirectory))
             {
-                fileSystemInfo.Delete();
+                var fullPath = Path.Combine(sourceDirectory, fileSystemInfo.PathWithoutBaseDirectory);
+
+                if (Directory.Exists(fullPath)) 
+                {
+                    Directory.Delete(fullPath, true);
+                    continue;
+                }
+                
+                if(File.Exists(fullPath)) 
+                {
+                    File.Delete(fullPath);
+                    continue;
+                }
+            }
+        }
+
+        private static FileAttributes RemoveAttribute(FileAttributes attributes, FileAttributes attributesToRemove)
+        {
+            return attributes & ~attributesToRemove;
+        }
+
+        public void ForcedDeleteInDirectory(string sourceDirectory)
+        {
+            foreach (WrappedFileSystemInfo fileSystemInfo in GetFilesAndFolders(sourceDirectory))
+            {
+                var fullPath = Path.Combine(sourceDirectory, fileSystemInfo.PathWithoutBaseDirectory);
+                
+                if (File.Exists(fullPath)) 
+                {
+                    FileAttributes attributes = File.GetAttributes(fullPath);
+                    attributes = RemoveAttribute(attributes, FileAttributes.ReadOnly);
+                    File.SetAttributes(fullPath, attributes | FileAttributes.Normal);
+                    File.Delete(fullPath);
+                    continue;
+                }
+            }
+
+            foreach (WrappedFileSystemInfo fileSystemInfo in GetFilesAndFolders(sourceDirectory))
+            {
+                var fullPath = Path.Combine(sourceDirectory, fileSystemInfo.PathWithoutBaseDirectory);
+
+                if (Directory.Exists(fullPath))
+                {
+                    Directory.Delete(fullPath, true);
+                    continue;
+                }
             }
 
         }
@@ -292,7 +337,7 @@ namespace Phantom.Core.Builtins
     [CompilerGlobalScope]
     public static class FilesContainer
     {
-        public static FileFilter CreateNewFileFilter 
+        public static FileFilter NewFileFilter 
         {
             get 
             {
