@@ -64,4 +64,3 @@ target coverage:
     .toolPath = "${ncover_path}/NCoverExplorer.console.exe"
     .project = "Phantom"
     .reportDirectory = "build/Coverage"
-    

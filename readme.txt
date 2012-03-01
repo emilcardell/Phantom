@@ -26,9 +26,10 @@ desc "Copies the binaries to the 'build' directory"
 target deploy:
 	rmdir('build')
 	
-	FileFilter
+	with FileList("src/MyApp/bin/release"):
 		.Include("*.{dll,exe}")
-		.CopyToDirectory("src/MyApp/bin/release","build")
+		.ForEach def(file):
+			file.CopyToDirectory("build")
 	
 desc "Creates zip package"
 target package:
